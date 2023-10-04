@@ -28,7 +28,7 @@ spring:
               name: admin
               password: password
   application:
-    name: ms-order
+    name: orders-api
 
 management:
   info:
