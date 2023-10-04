@@ -3,6 +3,7 @@ package com.example.msorder.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +31,10 @@ public class User implements UserDetails {
 
     @NotEmpty
     private String password;
+
+    @NotEmpty
+    @Length(min = 3, max = 100)
+    private String name;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

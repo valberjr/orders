@@ -1,6 +1,7 @@
 package com.example.msorder.controllers;
 
 import com.example.msorder.dtos.ExceptionResponseDto;
+import com.example.msorder.exceptions.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -33,6 +34,12 @@ public class ApplicationControllerAdvice {
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ExceptionResponseDto handleJwtException(Exception e) {
+        return new ExceptionResponseDto(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidJwtAuthenticationException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public ExceptionResponseDto handleInvalidJwtAuthenticationException(Exception e) {
         return new ExceptionResponseDto(e.getMessage());
     }
 

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OrderMapper {
 
-    private final CustomerMapper customerMapper;
+    private final UserMapper userMapper;
 
     public OrderDto toDto(Order order) {
         if (order == null) {
@@ -32,9 +32,7 @@ public class OrderMapper {
                                         product.getPrice()))
                                 .toList()
                 )).toList();
-        return new OrderDto(order.getId(), order.getStatus().getValue(),
-                customerMapper.toDto(order.getCustomer()),
-                items);
+        return new OrderDto(order.getId(), order.getStatus().getValue(), userMapper.toDto(order.getUser()), items);
     }
 
     public Order toEntity(OrderDto dto) {
@@ -46,7 +44,7 @@ public class OrderMapper {
             order.setId(dto.id());
         }
         order.setStatus(convertStatusValue(dto.status()));
-        order.setCustomer(customerMapper.toEntity(dto.customer()));
+        order.setUser(userMapper.toEntity(dto.user()));
         dto.items().forEach(dtoItem -> {
             var orderItem = new OrderItem();
             orderItem.setQuantity(dtoItem.quantity());

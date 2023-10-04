@@ -5,10 +5,7 @@ import com.example.msorder.enums.StatusConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -22,6 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Table(name = "tb_orders")
 public class Order implements Serializable {
 
@@ -41,8 +39,8 @@ public class Order implements Serializable {
 
     @NotNull
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @NotEmpty
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

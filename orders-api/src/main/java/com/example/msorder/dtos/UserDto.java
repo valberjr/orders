@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.Length;
 
 import java.util.UUID;
 
-public record CustomerDto(
+public record UserDto(
         UUID id,
         @NotBlank
         @Length(min = 3, max = 100)

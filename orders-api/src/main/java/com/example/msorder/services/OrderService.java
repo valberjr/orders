@@ -30,7 +30,7 @@ public class OrderService {
     private final RabbitTemplate rabbitTemplate;
     private final RestTemplate restTemplate;
 
-    private final CustomerService customerService;
+    private final UserService userService;
 
     @Value("${spring.rabbitmq.queue}")
     private String queue;
@@ -38,7 +38,7 @@ public class OrderService {
     @Transactional
     public OrderDto createOrder(OrderDto orderDto) {
         Order order = mapper.toEntity(orderDto);
-        order.setCustomer(this.customerService.findById(orderDto.customer().id()));
+        order.setUser(this.userService.findById(orderDto.user().id()));
         Order saved = repository.save(order);
         return mapper.toDto(saved);
     }

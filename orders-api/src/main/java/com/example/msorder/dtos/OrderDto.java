@@ -12,7 +12,7 @@ public record OrderDto(
         @NotBlank
         String status,
         @NotNull
-        CustomerDto customer,
+        UserDto user,
         @NotEmpty
         List<OrderItemDto> items) {
 }
