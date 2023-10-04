@@ -11,7 +11,7 @@ spring:
     console:
       enabled: true
   rabbitmq:
-    addresses: amqps://***
+    addresses: amqps://
     queue: ms.orders
   boot:
     admin:
@@ -19,6 +19,14 @@ spring:
         enabled: true
         url: http://localhost:8081/admin-console
         auto-deregistration: true
+        username: admin
+        password: password
+        instance:
+          service-base-url: http://localhost:8080
+          metadata:
+            user:
+              name: admin
+              password: password
   application:
     name: ms-order
 
