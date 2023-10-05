@@ -1,7 +1,6 @@
 package com.example.msorder.schedulers;
 
 import com.example.msorder.dtos.OrderDto;
-import com.example.msorder.dtos.mappers.OrderMapper;
 import com.example.msorder.enums.Status;
 import com.example.msorder.services.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +16,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class IncompleteOrdersScheduler {
 
     private final OrderService service;
-    private final OrderMapper mapper;
 
-    @Scheduled(cron = "0 * * ? * *")
+    @Scheduled(cron = "0 */2 * ? * *")
     public void updateIncompleteStatus() {
         this.service
                 .findIncompleteOrders()
                 .forEach(order -> {
                     order.setStatus(Status.ABANDONED);
                     OrderDto updatedOrder = this.service.updateIncompleteStatusOrder(order);
-                    log.info("Order {} updated status to INCOMPLETE", order.getId());
+                    log.info("Status order {} updated to ABANDONED", order.getId());
                     this.service.sendToQueue(updatedOrder);
                 });
     }

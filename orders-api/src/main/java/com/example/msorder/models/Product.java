@@ -1,5 +1,6 @@
 package com.example.msorder.models;
 
+import com.example.msorder.dtos.ProductDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
@@ -49,5 +50,13 @@ public class Product implements Serializable {
     public Product(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
+    }
+
+    public Product(ProductDto productDto) {
+        if (productDto.id() != null) {
+            this.id = UUID.fromString(productDto.id());
+        }
+        this.name = productDto.name();
+        this.price = productDto.price();
     }
 }

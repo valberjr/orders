@@ -1,7 +1,7 @@
 package com.example.msorder.models;
 
+import com.example.msorder.dtos.OrderDto;
 import com.example.msorder.enums.Status;
-import com.example.msorder.enums.StatusConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -31,7 +31,6 @@ public class Order implements Serializable {
     private UUID id;
 
     @NotNull
-    @Convert(converter = StatusConverter.class)
     @Column(nullable = false)
     private Status status;
 
@@ -46,6 +45,15 @@ public class Order implements Serializable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(nullable = false)
     private List<OrderItem> items = new ArrayList<>();
+
+    public Order(OrderDto orderDto) {
+        if (orderDto.id() != null) {
+            this.id = UUID.fromString(orderDto.id());
+        }
+        this.status = Status.valueOf(orderDto.status().toUpperCase());
+        this.user = new User(orderDto.user());
+        orderDto.items().forEach(orderItemDto -> addItem(new OrderItem(orderItemDto)));
+    }
 
     public void addItem(OrderItem orderItem) {
         items.add(orderItem);

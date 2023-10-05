@@ -1,7 +1,6 @@
 package com.example.msorder.services;
 
 import com.example.msorder.dtos.OrderDto;
-import com.example.msorder.dtos.mappers.OrderMapper;
 import com.example.msorder.enums.Status;
 import com.example.msorder.models.Order;
 import com.example.msorder.repositories.OrderRepository;
@@ -12,13 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +25,8 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository repository;
-    private final OrderMapper mapper;
     private final RabbitTemplate rabbitTemplate;
     private final RestTemplate restTemplate;
-
     private final UserService userService;
 
     @Value("${spring.rabbitmq.queue}")
@@ -37,30 +34,30 @@ public class OrderService {
 
     @Transactional
     public OrderDto createOrder(OrderDto orderDto) {
-        Order order = mapper.toEntity(orderDto);
-        order.setUser(this.userService.findById(orderDto.user().id()));
-        Order saved = repository.save(order);
-        return mapper.toDto(saved);
+        var order = new Order(orderDto);
+        order.setUser(this.userService.findById(UUID.fromString(orderDto.user().id())));
+        return OrderDto.toEntity(repository.save(order));
     }
 
     @Transactional(readOnly = true)
     public List<OrderDto> findAll() {
         return repository.findAll()
                 .stream()
-                .map(mapper::toDto)
+                .map(OrderDto::toEntity)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<Order> findIncompleteOrders() {
-        return repository.findAllByStatusAndCreatedAtBefore(Status.INCOMPLETE, LocalDateTime.now().minusHours(48))
+        return repository
+                .findAllByStatusAndCreatedAtBefore(Status.INCOMPLETE, LocalDateTime.now().minusHours(48))
                 .stream()
                 .toList();
     }
 
     @Transactional
     public OrderDto updateIncompleteStatusOrder(Order order) {
-        return mapper.toDto(repository.save(order));
+        return OrderDto.toEntity(repository.save(order));
     }
 
     public void sendToQueue(OrderDto orderDto) {
@@ -73,9 +70,9 @@ public class OrderService {
         log.info("Sending order {} to {}", orderDto.id(), webhookUrl);
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<OrderDto> request = new HttpEntity<>(orderDto, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(webhookUrl, request, String.class);
-        log.info("Response from {} : {}", webhookUrl, response.getBody());
+        var request = new HttpEntity<>(orderDto, headers);
+        var response = restTemplate.postForEntity(webhookUrl, request, String.class);
+        log.info("Response from {} : {}", webhookUrl, response.getStatusCode());
     }
 
 }

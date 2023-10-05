@@ -1,5 +1,6 @@
 package com.example.msorder.models;
 
+import com.example.msorder.dtos.OrderItemDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,6 +45,14 @@ public class OrderItem implements Serializable {
 
     public OrderItem(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public OrderItem(OrderItemDto orderItemDto) {
+        if (orderItemDto.id() != null) {
+            this.id = UUID.fromString(orderItemDto.id());
+        }
+        this.quantity = orderItemDto.quantity();
+        orderItemDto.products().forEach(productDto -> addProduct(new Product(productDto)));
     }
 
     public void addProduct(Product product) {

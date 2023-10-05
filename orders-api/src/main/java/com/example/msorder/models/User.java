@@ -1,5 +1,6 @@
 package com.example.msorder.models;
 
+import com.example.msorder.dtos.UserDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -39,6 +40,13 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
+    public User(UserDto dto) {
+        if (dto.id() != null) {
+            this.id = UUID.fromString(dto.id());
+        }
+        this.name = dto.name();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
