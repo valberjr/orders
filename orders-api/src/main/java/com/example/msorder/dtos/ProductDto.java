@@ -16,8 +16,9 @@ public record ProductDto(
         BigDecimal price
 ) {
     public static ProductDto toEntity(Product product) {
+        var id = product.getId() != null ? String.valueOf(product.getId()) : null;
         return new ProductDto(
-                product.getId().toString(),
+                id,
                 product.getName(),
                 product.getPrice()
         );

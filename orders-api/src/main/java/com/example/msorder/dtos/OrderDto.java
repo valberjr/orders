@@ -17,8 +17,9 @@ public record OrderDto(
         List<OrderItemDto> items) {
 
     public static OrderDto toEntity(Order order) {
+        var id = order.getId() != null ? String.valueOf(order.getId()) : null;
         return new OrderDto(
-                order.getId().toString(),
+                id,
                 order.getStatus().name(),
                 UserDto.toEntity(order.getUser()),
                 order.getItems().stream().map(OrderItemDto::toEntity).toList()

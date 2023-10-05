@@ -4,10 +4,7 @@ import com.example.msorder.dtos.OrderItemDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -21,6 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "tb_order_items")
+@Builder
 public class OrderItem implements Serializable {
 
     @Serial
