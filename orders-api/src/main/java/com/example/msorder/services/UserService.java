@@ -20,4 +20,9 @@ public class UserService {
                 .findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
+
+    @Transactional
+    public User save(User user) {
+        return this.repository.save(user);
+    }
 }
