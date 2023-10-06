@@ -1,7 +1,6 @@
 package com.example.msorder.controllers;
 
 import com.example.msorder.models.AuthenticationRequest;
-import com.example.msorder.repositories.UserRepository;
 import com.example.msorder.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,6 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
 
     @SuppressWarnings("rawtypes")
     @PostMapping("/signin")
