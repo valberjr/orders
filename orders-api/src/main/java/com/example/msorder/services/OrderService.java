@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,7 +50,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<Order> findIncompleteOrders() {
         return repository
-                .findAllByStatusAndCreatedAtBefore(Status.INCOMPLETE, LocalDate.now().minusDays(2))
+                .findAllByStatusAndCreatedAtBefore(Status.INCOMPLETE, LocalDateTime.now().minusDays(2))
                 .stream()
                 .toList();
     }

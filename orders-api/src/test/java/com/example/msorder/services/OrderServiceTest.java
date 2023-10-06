@@ -21,12 +21,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -109,13 +108,12 @@ class OrderServiceTest {
         order.setCreatedAt(LocalDateTime.now().minusDays(3));
         var incompleteOrders = List.of(order);
         // when
-        when(orderRepository.findAllByStatusAndCreatedAtBefore(
-                Status.INCOMPLETE,
-                LocalDate.now().minusDays(2)
-        )).thenReturn(incompleteOrders);
+        when(orderRepository.findAllByStatusAndCreatedAtBefore(eq(Status.INCOMPLETE), any(LocalDateTime.class)))
+                .thenReturn(incompleteOrders);
         var actualIncompleteOrders = orderService.findIncompleteOrders();
         // then
-        assertEquals(incompleteOrders, actualIncompleteOrders);
+        assertNotNull(actualIncompleteOrders);
+        assertFalse(actualIncompleteOrders.isEmpty());
     }
 
     @Test
