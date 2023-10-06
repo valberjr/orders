@@ -48,4 +48,15 @@ class UserServiceTest {
         assertEquals(expectedMessage, actualMessage);
     }
 
+    @Test
+    void shouldSaveUser() {
+        // given
+        var user = User.builder().id(UUID.randomUUID()).build();
+        // when
+        when(userRepository.save(user)).thenReturn(user);
+        var savedUser = userService.save(user);
+        // then
+        verify(userRepository, times(1)).save(user);
+    }
+
 }
