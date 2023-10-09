@@ -10,5 +10,5 @@ import org.springframework.stereotype.Component;
 public class JwtProperties {
 
     private String secretKey = "R9kV7E4oLj4xEMFJiqixz2Umjbviyp";
-    private long validityInMs = 3600000; // 1 hour
+    private long validityInMs = 60000; // 1 hour
 }

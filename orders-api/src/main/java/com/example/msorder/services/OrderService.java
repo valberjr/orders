@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -45,6 +46,13 @@ public class OrderService {
                 .stream()
                 .map(OrderDto::toEntity)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "orders", key = "#id")
+    public OrderDto findById(String id) {
+        return OrderDto.toEntity(repository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new IllegalArgumentException("Order not found")));
     }
 
     @Transactional(readOnly = true)

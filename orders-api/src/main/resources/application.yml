@@ -10,8 +10,13 @@ spring:
   h2:
     console:
       enabled: true
+  redis:
+    hostname:
+    port:
+    username:
+    password:
   rabbitmq:
-    addresses: amqps://
+    addresses:
     queue: ms.orders
   boot:
     admin:

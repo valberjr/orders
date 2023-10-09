@@ -23,6 +23,11 @@ public class OrderController {
         return orderService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public OrderDto findById(@PathVariable String id) {
+        return orderService.findById(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto create(@RequestBody @Valid OrderDto orderDto) {

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
 import java.util.List;
 
 public record OrderDto(
@@ -14,7 +15,7 @@ public record OrderDto(
         @NotNull
         UserDto user,
         @NotEmpty
-        List<OrderItemDto> items) {
+        List<OrderItemDto> items) implements Serializable {
 
     public static OrderDto toEntity(Order order) {
         var id = order.getId() != null ? String.valueOf(order.getId()) : null;

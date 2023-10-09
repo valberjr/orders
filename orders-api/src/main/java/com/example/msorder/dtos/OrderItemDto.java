@@ -4,6 +4,7 @@ import com.example.msorder.models.OrderItem;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.io.Serializable;
 import java.util.List;
 
 public record OrderItemDto(
@@ -12,7 +13,7 @@ public record OrderItemDto(
         Integer quantity,
         @NotEmpty
         List<ProductDto> products
-) {
+) implements Serializable {
     public static OrderItemDto toEntity(OrderItem orderItem) {
         var id = orderItem.getId() != null ? String.valueOf(orderItem.getId()) : null;
         return new OrderItemDto(

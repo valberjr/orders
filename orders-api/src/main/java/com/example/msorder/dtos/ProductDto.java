@@ -5,6 +5,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 public record ProductDto(
@@ -14,7 +15,7 @@ public record ProductDto(
         String name,
         @DecimalMin(value = "0.00")
         BigDecimal price
-) {
+) implements Serializable {
     public static ProductDto toEntity(Product product) {
         var id = product.getId() != null ? String.valueOf(product.getId()) : null;
         return new ProductDto(
