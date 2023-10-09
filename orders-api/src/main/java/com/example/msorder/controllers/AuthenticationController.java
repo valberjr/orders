@@ -5,9 +5,7 @@ import com.example.msorder.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,20 +22,16 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @SuppressWarnings("rawtypes")
+
     @PostMapping("/signin")
-    public ResponseEntity signin(@RequestBody AuthenticationRequest data) {
-        try {
-            var username = data.getUsername();
-            var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
-            var token = jwtTokenProvider.createToken(authentication);
-            Map<Object, Object> model = new HashMap<>();
-            model.put("username", username);
-            model.put("token", token);
-            return ResponseEntity.ok(model);
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
-        }
+    public ResponseEntity<Map<Object, Object>> signin(@RequestBody AuthenticationRequest data) {
+        var username = data.getUsername();
+        var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
+        var token = jwtTokenProvider.createToken(authentication);
+        Map<Object, Object> model = new HashMap<>();
+        model.put("username", username);
+        model.put("token", token);
+        return ResponseEntity.ok(model);
     }
 
 }

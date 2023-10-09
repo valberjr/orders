@@ -15,9 +15,8 @@ import java.util.Map;
 @RequestMapping("/api/users")
 public class UserInfoController {
 
-    @SuppressWarnings("rawtypes")
     @GetMapping("/me")
-    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Map<Object, Object>> currentUser(@AuthenticationPrincipal UserDetails userDetails) {
         Map<Object, Object> model = new HashMap<>();
         model.put("username", userDetails.getUsername());
         model.put("roles", userDetails.getAuthorities()
