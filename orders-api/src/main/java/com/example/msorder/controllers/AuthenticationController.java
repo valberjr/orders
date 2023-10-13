@@ -1,8 +1,8 @@
 package com.example.msorder.controllers;
 
+import com.example.msorder.configs.jwt.JwtTokenProvider;
 import com.example.msorder.models.AuthenticationRequest;
-import com.example.msorder.security.JwtTokenProvider;
-import lombok.RequiredArgsConstructor;
+import jakarta.inject.Inject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,11 +16,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
+    @Inject
+    private AuthenticationManager authenticationManager;
+    @Inject
+    private JwtTokenProvider jwtTokenProvider;
 
 
     @PostMapping("/signin")

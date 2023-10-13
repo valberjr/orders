@@ -4,7 +4,9 @@ import com.example.msorder.dtos.OrderDto;
 import com.example.msorder.enums.Status;
 import com.example.msorder.models.Order;
 import com.example.msorder.repositories.OrderRepository;
-import lombok.RequiredArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,35 +14,35 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Service
-@RequiredArgsConstructor
+@Named
 @Slf4j
+@Transactional
 public class OrderService {
 
-    private final OrderRepository repository;
-    private final RabbitTemplate rabbitTemplate;
-    private final RestTemplate restTemplate;
-    private final UserService userService;
+    @Inject
+    private OrderRepository repository;
+    @Inject
+    private UserService userService;
+    @Inject
+    private RabbitTemplate rabbitTemplate;
+    @Inject
+    private RestTemplate restTemplate;
 
     @Value("${spring.rabbitmq.queue}")
     private String queue;
 
-    @Transactional
     public OrderDto createOrder(OrderDto orderDto) {
         var order = new Order(orderDto);
         order.setUser(this.userService.findById(UUID.fromString(orderDto.user().id())));
         return OrderDto.toEntity(repository.save(order));
     }
 
-    @Transactional(readOnly = true)
     public List<OrderDto> findAll() {
         return repository.findAll()
                 .stream()
@@ -48,14 +50,12 @@ public class OrderService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     @Cacheable(value = "orders", key = "#id")
     public OrderDto findById(String id) {
         return OrderDto.toEntity(repository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new IllegalArgumentException("Order not found")));
     }
 
-    @Transactional(readOnly = true)
     public List<Order> findIncompleteOrders() {
         return repository
                 .findAllByStatusAndCreatedAtBefore(Status.INCOMPLETE, LocalDateTime.now().minusDays(2))
@@ -63,7 +63,6 @@ public class OrderService {
                 .toList();
     }
 
-    @Transactional
     public OrderDto updateIncompleteStatusOrder(Order order) {
         return OrderDto.toEntity(repository.save(order));
     }

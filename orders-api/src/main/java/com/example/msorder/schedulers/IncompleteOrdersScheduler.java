@@ -3,19 +3,17 @@ package com.example.msorder.schedulers;
 import com.example.msorder.dtos.OrderDto;
 import com.example.msorder.enums.Status;
 import com.example.msorder.services.OrderService;
-import lombok.RequiredArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-@Configuration
-@EnableScheduling
-@RequiredArgsConstructor
+@Named
 @Slf4j
 public class IncompleteOrdersScheduler {
 
-    private final OrderService service;
+    @Inject
+    private OrderService service;
 
     @Scheduled(cron = "0 */2 * ? * *")
     public void updateIncompleteStatus() {

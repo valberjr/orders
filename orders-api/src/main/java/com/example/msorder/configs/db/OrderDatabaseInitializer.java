@@ -1,4 +1,4 @@
-package com.example.msorder.configs;
+package com.example.msorder.configs.db;
 
 import com.example.msorder.enums.Status;
 import com.example.msorder.models.Order;
@@ -6,35 +6,33 @@ import com.example.msorder.models.OrderItem;
 import com.example.msorder.models.Product;
 import com.example.msorder.repositories.OrderRepository;
 import com.example.msorder.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Component
-@RequiredArgsConstructor
-@Slf4j
+@Named
 @org.springframework.core.annotation.Order(2)
-public class OrderDatabaseInitializer implements
-        CommandLineRunner {
+@Slf4j
+public class OrderDatabaseInitializer implements CommandLineRunner {
 
-    private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
+    @Inject
+    private OrderRepository orderRepository;
+    @Inject
+    private UserRepository userRepository;
 
     @Override
-    @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
         var order = new Order();
         order.setStatus(Status.INCOMPLETE);
         order.setCreatedAt(LocalDateTime.now().minusHours(72));
 
         // finds a user
-        userRepository.findAll().stream().findFirst().ifPresent(order::setUser);
+        this.userRepository.findAll().stream().findFirst().ifPresent(order::setUser);
 
         // add order items with products
         OrderItem orderItem1 = new OrderItem(1);
@@ -45,7 +43,7 @@ public class OrderDatabaseInitializer implements
         order.addItem(orderItem2);
         orderItem2.addProduct(new Product("Product 2", BigDecimal.valueOf(20)));
 
-        orderRepository.save(order);
-        log.debug("Initialized database with new orders.");
+        this.orderRepository.save(order);
+        log.debug("Database initialized with new orders.");
     }
 }

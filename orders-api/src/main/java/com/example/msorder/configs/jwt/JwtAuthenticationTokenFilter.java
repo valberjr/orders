@@ -1,13 +1,14 @@
-package com.example.msorder.security;
+package com.example.msorder.configs.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,18 +19,16 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
-
+@Named
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
-    @Autowired
+    @Inject
     private JwtTokenProvider jwtTokenProvider;
+    @Inject
+    @Named("handlerExceptionResolver")
     private HandlerExceptionResolver exceptionResolver;
 
-    public static final String HEADER_PREFIX = "Bearer ";
-
-    public JwtAuthenticationTokenFilter(HandlerExceptionResolver exceptionResolver) {
-        this.exceptionResolver = exceptionResolver;
-    }
+    private static final String HEADER_PREFIX = "Bearer ";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
