@@ -1,11 +1,13 @@
 package com.example.msorder.services;
 
+import com.example.msorder.dtos.UserResponse;
 import com.example.msorder.models.User;
 import com.example.msorder.repositories.UserRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Named
@@ -14,6 +16,13 @@ public class UserService {
 
     @Inject
     private UserRepository repository;
+
+    public List<UserResponse> findAll() {
+        return this.repository.findAll()
+                .stream()
+                .map(UserResponse::toResponse)
+                .toList();
+    }
 
     public User findById(UUID id) {
         return this.repository
@@ -24,4 +33,5 @@ public class UserService {
     public User save(User user) {
         return this.repository.save(user);
     }
+
 }
