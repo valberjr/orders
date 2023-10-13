@@ -37,7 +37,7 @@ public class Order implements Serializable {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
