@@ -1,6 +1,7 @@
 package com.example.msorder.controllers;
 
-import com.example.msorder.dtos.OrderDto;
+import com.example.msorder.dtos.OrderRequest;
+import com.example.msorder.dtos.OrderResponse;
 import com.example.msorder.services.OrderService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -19,18 +20,20 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public List<OrderDto> findAll() {
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderResponse> findAll() {
         return orderService.findAll();
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public OrderDto findById(@PathVariable String id) {
+    public OrderResponse findById(@PathVariable String id) {
         return orderService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto create(@RequestBody @Valid OrderDto orderDto) {
-        return this.orderService.createOrder(orderDto);
+    public OrderResponse create(@RequestBody @Valid OrderRequest orderRequest) {
+        return this.orderService.createOrder(orderRequest);
     }
 }

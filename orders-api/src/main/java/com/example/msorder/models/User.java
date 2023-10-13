@@ -1,6 +1,5 @@
 package com.example.msorder.models;
 
-import com.example.msorder.dtos.UserDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -19,8 +18,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "tb_users")
 @Builder
+@Table(name = "tb_users")
 public class User implements UserDetails {
 
     @Id
@@ -41,11 +40,9 @@ public class User implements UserDetails {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
-    public User(UserDto dto) {
-        if (dto.id() != null) {
-            this.id = UUID.fromString(dto.id());
-        }
-        this.name = dto.name();
+    public User(String id, String name) {
+        this.id = UUID.fromString(id);
+        this.name = name;
     }
 
     @Override

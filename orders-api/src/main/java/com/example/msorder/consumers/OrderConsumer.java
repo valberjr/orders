@@ -1,6 +1,6 @@
 package com.example.msorder.consumers;
 
-import com.example.msorder.dtos.OrderDto;
+import com.example.msorder.models.Order;
 import com.example.msorder.services.OrderService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -16,8 +16,8 @@ public class OrderConsumer {
     private OrderService orderService;
 
     @RabbitListener(queues = "${spring.rabbitmq.queue}")
-    public void listen(@Payload OrderDto orderDto) {
-        log.info("Order {} received", orderDto.id());
-        this.orderService.sendToWebhookSite(orderDto);
+    public void listen(@Payload Order order) {
+        log.info("Order {} received", order.getId());
+        this.orderService.sendToWebhookSite(order);
     }
 }

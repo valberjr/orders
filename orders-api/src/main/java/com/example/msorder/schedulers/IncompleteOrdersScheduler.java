@@ -1,7 +1,7 @@
 package com.example.msorder.schedulers;
 
-import com.example.msorder.dtos.OrderDto;
 import com.example.msorder.enums.Status;
+import com.example.msorder.models.Order;
 import com.example.msorder.services.OrderService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -19,11 +19,14 @@ public class IncompleteOrdersScheduler {
     public void updateIncompleteStatus() {
         this.service
                 .findIncompleteOrders()
-                .forEach(order -> {
+                .forEach(orderQueue -> {
+                    var order = new Order(orderQueue);
                     order.setStatus(Status.ABANDONED);
-                    OrderDto updatedOrder = this.service.updateIncompleteStatusOrder(order);
-                    log.info("Status order {} updated to ABANDONED", order.getId());
-                    this.service.sendToQueue(updatedOrder);
+                    this.service.updateIncompleteStatusOrder(order)
+                            .ifPresent(foundOrder -> {
+                                this.service.sendToQueue(foundOrder);
+                                log.info("Order {} updated to ABANDONED", order.getId());
+                            });
                 });
     }
 }

@@ -1,6 +1,8 @@
 package com.example.msorder.services;
 
-import com.example.msorder.dtos.OrderDto;
+import com.example.msorder.dtos.OrderQueue;
+import com.example.msorder.dtos.OrderRequest;
+import com.example.msorder.dtos.OrderResponse;
 import com.example.msorder.enums.Status;
 import com.example.msorder.models.Order;
 import com.example.msorder.repositories.OrderRepository;
@@ -18,7 +20,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import static com.example.msorder.dtos.OrderResponse.toResponse;
 
 @Named
 @Slf4j
@@ -37,45 +42,48 @@ public class OrderService {
     @Value("${spring.rabbitmq.queue}")
     private String queue;
 
-    public OrderDto createOrder(OrderDto orderDto) {
-        return OrderDto.toEntity(repository.save(new Order(orderDto)));
+    public OrderResponse createOrder(OrderRequest orderRequest) {
+        var order = new Order(orderRequest.status(), orderRequest.user(), orderRequest.items());
+        this.repository.save(order);
+        return toResponse(order);
     }
 
-    public List<OrderDto> findAll() {
+    public List<OrderResponse> findAll() {
         return repository.findAll()
                 .stream()
-                .map(OrderDto::toEntity)
+                .map(OrderResponse::toResponse)
                 .toList();
     }
 
     @Cacheable(value = "orders", key = "#id")
-    public OrderDto findById(String id) {
-        return OrderDto.toEntity(repository.findById(UUID.fromString(id))
+    public OrderResponse findById(String id) {
+        return toResponse(repository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new IllegalArgumentException("Order not found")));
     }
 
-    public List<Order> findIncompleteOrders() {
+    public List<OrderQueue> findIncompleteOrders() {
         return repository
                 .findAllByStatusAndCreatedAtBefore(Status.INCOMPLETE, LocalDateTime.now().minusDays(2))
                 .stream()
+                .map(OrderQueue::toQueue)
                 .toList();
     }
 
-    public OrderDto updateIncompleteStatusOrder(Order order) {
-        return OrderDto.toEntity(repository.save(order));
+    public Optional<Order> updateIncompleteStatusOrder(Order order) {
+        return Optional.of(repository.save(order));
     }
 
-    public void sendToQueue(OrderDto orderDto) {
-        rabbitTemplate.convertAndSend(queue, orderDto);
-        log.info("Order {} sent to queue", orderDto.id());
+    public void sendToQueue(Order order) {
+        rabbitTemplate.convertAndSend(queue, OrderQueue.toQueue(order));
+        log.info("Order {} sent to queue", order.getId());
     }
 
-    public void sendToWebhookSite(OrderDto orderDto) {
+    public void sendToWebhookSite(Order order) {
         var webhookUrl = "https://webhook.site/929855e8-bf4c-4865-a501-a47f5868e5f6";
-        log.info("Sending order {} to {}", orderDto.id(), webhookUrl);
+        log.info("Sending order {} to {}", order.getId(), webhookUrl);
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        var request = new HttpEntity<>(orderDto, headers);
+        var request = new HttpEntity<>(toResponse(order), headers);
         var response = restTemplate.postForEntity(webhookUrl, request, String.class);
         log.info("Response from {} : {}", webhookUrl, response.getStatusCode());
     }
