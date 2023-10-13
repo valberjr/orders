@@ -38,9 +38,7 @@ public class OrderService {
     private String queue;
 
     public OrderDto createOrder(OrderDto orderDto) {
-        var order = new Order(orderDto);
-        order.setUser(this.userService.findById(UUID.fromString(orderDto.user().id())));
-        return OrderDto.toEntity(repository.save(order));
+        return OrderDto.toEntity(repository.save(new Order(orderDto)));
     }
 
     public List<OrderDto> findAll() {
