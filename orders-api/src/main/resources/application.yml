@@ -35,6 +35,10 @@ spring:
   application:
     name: orders-api
 
+server:
+  error:
+    include-stacktrace: never
+
 management:
   info:
     env:

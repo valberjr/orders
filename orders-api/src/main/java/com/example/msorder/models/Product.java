@@ -1,8 +1,5 @@
 package com.example.msorder.models;
 
-import com.example.msorder.dtos.ProductDto;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -23,8 +20,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "tb_products")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Product implements Serializable {
 
     @Serial
@@ -52,11 +47,4 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    public Product(ProductDto productDto) {
-        if (productDto.id() != null) {
-            this.id = UUID.fromString(productDto.id());
-        }
-        this.name = productDto.name();
-        this.price = productDto.price();
-    }
 }

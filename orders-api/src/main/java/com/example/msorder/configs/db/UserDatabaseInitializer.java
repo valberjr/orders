@@ -1,28 +1,28 @@
-package com.example.msorder.configs;
+package com.example.msorder.configs.db;
 
 import com.example.msorder.models.User;
 import com.example.msorder.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
-@RequiredArgsConstructor
-@Slf4j
+@Named
 @Order(1)
-public class UserDatabaseInitializer implements
-        CommandLineRunner {
+@Slf4j
+public class UserDatabaseInitializer implements CommandLineRunner {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Inject
+    private UserRepository userRepository;
+    @Inject
+    private PasswordEncoder passwordEncoder;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         this.userRepository.save(User.builder()
                 .username("user")
                 .password(passwordEncoder.encode("password"))

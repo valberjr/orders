@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
 @RestControllerAdvice
-public class CustomExceptionHandler {
+public class ApplicationControllerAdvice {
 
     /**
      * Spring Security Exceptions

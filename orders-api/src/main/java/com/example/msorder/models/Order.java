@@ -1,11 +1,16 @@
 package com.example.msorder.models;
 
-import com.example.msorder.dtos.OrderDto;
+import com.example.msorder.dtos.OrderItemRequest;
+import com.example.msorder.dtos.OrderQueue;
+import com.example.msorder.dtos.UserRequest;
 import com.example.msorder.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,7 +24,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
 @Table(name = "tb_orders")
 public class Order implements Serializable {
 
@@ -37,7 +41,7 @@ public class Order implements Serializable {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -46,21 +50,25 @@ public class Order implements Serializable {
     @Column(nullable = false)
     private List<OrderItem> items = new ArrayList<>();
 
-    public Order(OrderDto orderDto) {
-        if (orderDto.id() != null) {
-            this.id = UUID.fromString(orderDto.id());
-        }
-        this.status = Status.valueOf(orderDto.status().toUpperCase());
-        this.user = new User(orderDto.user());
-        orderDto.items().forEach(orderItemDto -> addItem(new OrderItem(orderItemDto)));
+    public Order(String status, UserRequest user, List<OrderItemRequest> items) {
+        this.status = Status.valueOf(status.toUpperCase());
+        this.user = new User(user.id(), user.name());
+        items.forEach(item -> addItem(new OrderItem(item.quantity(), item.products())));
     }
 
-    public void addItem(OrderItem orderItem) {
+    public Order(OrderQueue orderQueue) {
+        this.id = UUID.fromString(orderQueue.id());
+        this.status = Status.valueOf(orderQueue.status().toUpperCase());
+        this.user = new User(orderQueue.user().id(), orderQueue.user().name());
+        orderQueue.items().forEach(item -> addItem(new OrderItem(item)));
+    }
+
+    public <T extends OrderItem> void addItem(T orderItem) {
         items.add(orderItem);
         orderItem.setOrder(this);
     }
 
-    public void removeItem(OrderItem orderItem) {
+    public <T extends OrderItem> void removeItem(T orderItem) {
         items.remove(orderItem);
         orderItem.setOrder(null);
     }

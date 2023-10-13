@@ -1,10 +1,14 @@
 package com.example.msorder.models;
 
-import com.example.msorder.dtos.OrderItemDto;
+import com.example.msorder.dtos.OrderItemQueue;
+import com.example.msorder.dtos.ProductRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,7 +22,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "tb_order_items")
-@Builder
 public class OrderItem implements Serializable {
 
     @Serial
@@ -39,26 +42,28 @@ public class OrderItem implements Serializable {
     @NotEmpty
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(nullable = false)
-    List<Product> products = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 
     public OrderItem(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public OrderItem(OrderItemDto orderItemDto) {
-        if (orderItemDto.id() != null) {
-            this.id = UUID.fromString(orderItemDto.id());
-        }
-        this.quantity = orderItemDto.quantity();
-        orderItemDto.products().forEach(productDto -> addProduct(new Product(productDto)));
+    public OrderItem(Integer quantity, List<ProductRequest> products) {
+        this.quantity = quantity;
+        products.forEach(product -> addProduct(new Product(product.name(), product.price())));
     }
 
-    public void addProduct(Product product) {
+    public OrderItem(OrderItemQueue orderItemQueue) {
+        this.quantity = orderItemQueue.quantity();
+        orderItemQueue.products().forEach(product -> addProduct(new Product(product.name(), product.price())));
+    }
+
+    public <T extends Product> void addProduct(T product) {
         products.add(product);
         product.setOrderItem(this);
     }
 
-    public void removeProduct(Product product) {
+    public <T extends Product> void removeProduct(T product) {
         products.remove(product);
         product.setOrderItem(null);
     }
