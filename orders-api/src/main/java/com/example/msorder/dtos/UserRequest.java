@@ -1,19 +1,13 @@
 package com.example.msorder.dtos;
 
-import com.example.msorder.models.User;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record UserRequest(String id, String username, String name, List<String> roles) {
     public UserRequest(String id, String name) {
         this(id, name, null, null);
     }
 
-    public static UserRequest toResponse(User user) {
-        return new UserRequest(
-                user.getId().toString(),
-                user.getUsername(),
-                user.getName(),
-                user.getRoles());
-    }
 }
