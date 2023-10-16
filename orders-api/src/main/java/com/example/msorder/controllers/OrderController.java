@@ -36,4 +36,10 @@ public class OrderController {
     public OrderResponse create(@RequestBody @Valid OrderRequest orderRequest) {
         return this.orderService.createOrder(orderRequest);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String id) {
+        this.orderService.delete(id);
+    }
 }

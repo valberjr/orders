@@ -43,7 +43,6 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-
     @BeforeEach
     public void setUp() {
         ReflectionTestUtils.setField(orderService, "queue", "queue");
@@ -133,6 +132,16 @@ class OrderServiceTest {
         orderService.sendToWebhookSite(order);
         // then
         verify(restTemplate, times(1)).postForEntity(any(String.class), any(), any());
+    }
+
+    @Test
+    void shouldDeleteOrderGivenId() {
+        // given
+        var id = "9a63732e-589f-11fe-7c89-0141ac130203";
+        // when
+        orderService.delete(id);
+        // then
+        verify(orderRepository, times(1)).deleteById(any(UUID.class));
     }
 
     private Order createOrder() {

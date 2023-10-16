@@ -69,6 +69,10 @@ public class OrderService {
                 .toList();
     }
 
+    public void delete(String id) {
+        repository.deleteById(UUID.fromString(id));
+    }
+
     public Optional<Order> updateIncompleteStatusOrder(Order order) {
         return Optional.of(repository.save(order));
     }
@@ -87,5 +91,6 @@ public class OrderService {
         var response = restTemplate.postForEntity(webhookUrl, request, String.class);
         log.info("Response from {} : {}", webhookUrl, response.getStatusCode());
     }
+
 
 }

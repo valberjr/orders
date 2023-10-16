@@ -95,6 +95,23 @@ class OrderControllerTest {
         assertThat(orderResponse).isNotNull();
     }
 
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void shouldDeleteOrder() throws Exception {
+        // given
+        var orderId = getOrderId();
+        // when
+        var result = mockMvc
+                .perform(MockMvcRequestBuilders
+                        .delete("/api/orders/" + orderId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andReturn();
+        // then
+        assertThat(result.getResponse().getContentAsString()).isEmpty();
+    }
+
     private OrderRequest createRequest() {
         var user = createUserRequest();
         var product = new ProductRequest("product1", new BigDecimal("10.00"));
