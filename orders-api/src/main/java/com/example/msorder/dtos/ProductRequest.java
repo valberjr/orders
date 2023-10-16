@@ -7,7 +7,6 @@ import org.hibernate.validator.constraints.Length;
 import java.math.BigDecimal;
 
 public record ProductRequest(
-        String id,
         @NotBlank
         @Length(min = 3, max = 100)
         String name,

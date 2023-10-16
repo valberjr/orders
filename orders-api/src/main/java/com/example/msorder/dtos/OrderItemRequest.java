@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 public record OrderItemRequest(
-        String id,
         @Min(value = 1)
         Integer quantity,
         @NotEmpty
