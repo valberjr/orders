@@ -21,10 +21,13 @@ public class AuthenticationController {
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.OK)
     public AuthenticationResponse signin(@RequestBody AuthenticationRequest request) {
-        var username = request.getUsername();
-        var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, request.getPassword()));
+        var authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword())
+        );
         var token = jwtTokenProvider.createToken(authentication);
-        return new AuthenticationResponse(username, token);
+        return new AuthenticationResponse(token);
     }
 
 }
