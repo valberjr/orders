@@ -3,10 +3,12 @@ package com.example.msorder.dtos;
 import com.example.msorder.models.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.io.Serializable;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record UserResponse(String id, String username, String name, List<String> roles) {
+public record UserResponse(String id, String username, String name, List<String> roles)
+        implements Serializable {
 
     public UserResponse(String name) {
         this(null, null, name, null);
