@@ -36,8 +36,6 @@ public class OrderService {
     @Inject
     private OrderRepository repository;
     @Inject
-    private UserService userService;
-    @Inject
     private RabbitTemplate rabbitTemplate;
     @Inject
     private RestTemplate restTemplate;
