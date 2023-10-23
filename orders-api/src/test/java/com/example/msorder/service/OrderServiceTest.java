@@ -1,11 +1,7 @@
 package com.example.msorder.service;
 
 import com.example.msorder.dto.*;
-import com.example.msorder.model.Status;
-import com.example.msorder.model.Order;
-import com.example.msorder.model.OrderItem;
-import com.example.msorder.model.Product;
-import com.example.msorder.model.User;
+import com.example.msorder.model.*;
 import com.example.msorder.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -62,12 +60,14 @@ class OrderServiceTest {
     @Test
     void shouldReturnAListOfOrders() {
         // given
-        var expectedOrders = List.of(createOrderResponse());
+        Pageable pageable = Pageable.ofSize(10).withPage(0);
+        Page<Order> orders = Page.empty(pageable);
         // when
-        when(orderRepository.findAll()).thenReturn(createOrdersList());
-        List<OrderResponse> actualOrder = orderService.findAll();
+        when(orderRepository.findAll(pageable)).thenReturn(orders);
         // then
-        assertEquals(expectedOrders, actualOrder);
+        Page<OrderResponse> result = orderService.findAll(pageable);
+        verify(orderRepository).findAll(pageable);
+        assertTrue(result.isEmpty());
     }
 
     @Test

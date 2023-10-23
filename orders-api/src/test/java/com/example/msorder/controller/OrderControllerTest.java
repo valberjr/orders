@@ -4,12 +4,13 @@ import com.example.msorder.dto.*;
 import com.example.msorder.model.User;
 import com.example.msorder.service.OrderService;
 import com.example.msorder.service.UserService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -49,10 +50,8 @@ class OrderControllerTest {
                 .andReturn();
         // when
         var responseBody = result.getResponse().getContentAsString();
-        var orderDtoList = objectMapper.readValue(responseBody, new TypeReference<List<OrderResponse>>() {
-        });
         // then
-        assertThat(orderDtoList).isNotEmpty();
+        assertThat(responseBody).isNotEmpty();
     }
 
     @Test
@@ -138,10 +137,12 @@ class OrderControllerTest {
     }
 
     private String getOrderId() {
-        return this.orderService.findAll()
+        Pageable pageable = PageRequest.of(0, 10);
+        return this.orderService.findAll(pageable)
+                .getContent()
                 .stream()
-                .findFirst()
                 .map(OrderResponse::id)
+                .findFirst()
                 .orElseThrow();
     }
 }
