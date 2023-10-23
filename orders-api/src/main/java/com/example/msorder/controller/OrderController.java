@@ -5,6 +5,8 @@ import com.example.msorder.dto.OrderResponse;
 import com.example.msorder.service.OrderService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +23,8 @@ public class OrderController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<OrderResponse> findAll() {
-        return orderService.findAll();
+    public Page<OrderResponse> findAll(Pageable pageable) {
+        return orderService.findAll(pageable);
     }
 
     @ResponseStatus(HttpStatus.OK)
