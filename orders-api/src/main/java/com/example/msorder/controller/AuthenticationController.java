@@ -3,10 +3,12 @@ package com.example.msorder.controller;
 import com.example.msorder.config.jwt.JwtTokenProvider;
 import com.example.msorder.dto.AuthenticationResponse;
 import com.example.msorder.model.AuthenticationRequest;
+import com.example.msorder.model.User;
 import jakarta.inject.Inject;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,13 +23,18 @@ public class AuthenticationController {
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.OK)
     public AuthenticationResponse signin(@RequestBody AuthenticationRequest request) {
-        var authentication = authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword())
         );
         var token = jwtTokenProvider.createToken(authentication);
-        return new AuthenticationResponse(token);
+
+        var user = (User) authentication.getPrincipal();
+        var userId = String.valueOf(user.getId());
+        var name = user.getName();
+
+        return new AuthenticationResponse(token, userId, name);
     }
 
 }
