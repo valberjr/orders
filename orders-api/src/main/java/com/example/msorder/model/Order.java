@@ -34,7 +34,7 @@ public class Order implements Serializable {
     @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.INCOMPLETE;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -48,8 +48,7 @@ public class Order implements Serializable {
     @Column(nullable = false)
     private List<OrderItem> items = new ArrayList<>();
 
-    public Order(String status, UserRequest user, List<OrderItemRequest> items) {
-        this.status = Status.valueOf(status.toUpperCase());
+    public Order(UserRequest user, List<OrderItemRequest> items) {
         this.user = new User(user.id(), user.name());
         items.forEach(item -> addItem(new OrderItem(item.quantity(), item.products())));
     }

@@ -18,6 +18,6 @@ public class OrderConsumer {
     @RabbitListener(queues = "${spring.rabbitmq.queue}")
     public void listen(@Payload Order order) {
         log.info("Order {} received", order.getId());
-        this.orderService.sendToWebhookSite(order);
+        //this.orderService.sendToWebhookSite(order);
     }
 }
