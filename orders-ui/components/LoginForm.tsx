@@ -1,5 +1,6 @@
 'use client';
 
+import { nextLocalStorage } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { FormEvent } from 'react';
 
@@ -33,7 +34,7 @@ const LoginForm = () => {
       if (response.ok) {
         const data = await response.json();
         // store token in local storage
-        localStorage.setItem('auth_token', data.token);
+        nextLocalStorage()?.setItem('auth_token', data.token);
         // clean the inputs
         // redirect to orders page
         router.push('/orders');

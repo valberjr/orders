@@ -1,12 +1,13 @@
 'use client';
 
+import { nextLocalStorage } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const Page = () => {
   const router = useRouter();
 
-  const authToken = localStorage.getItem('auth_token');
+  const authToken = nextLocalStorage()?.getItem('auth_token');
 
   const [isLoading, setIsLoading] = useState(true);
 
