@@ -146,7 +146,7 @@ class OrderServiceTest {
 
     private Order createOrder() {
         var orderRequest = createOrderRequest();
-        return new Order(orderRequest.status(), orderRequest.user(), orderRequest.items());
+        return new Order(orderRequest.user(), orderRequest.items());
     }
 
     private List<Order> createOrdersList() {
@@ -178,7 +178,6 @@ class OrderServiceTest {
 
     private OrderRequest createOrderRequest() {
         return new OrderRequest(
-                "INCOMPLETE",
                 new UserRequest("8a45689e-639e-11ee-8c99-0242ac120002", "jessica"),
                 List.of(new OrderItemRequest(
                         1,

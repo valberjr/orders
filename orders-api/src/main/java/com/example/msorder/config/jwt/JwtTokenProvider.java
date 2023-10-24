@@ -4,7 +4,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,16 +21,14 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private static final String AUTHORITIES_KEY = "roles";
-
-    @Inject
-    private JwtProperties jwtProperties;
+    private static final String SECRET = "R9kV7E4oLj4xEMFJiqixz2Umjbviyp";
 
     private SecretKey secretKey;
 
     @PostConstruct
     protected void init() {
-        var secret = Base64.getEncoder().encodeToString(this.jwtProperties.getSecretKey().getBytes());
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        String secret = Base64.getEncoder().encodeToString(SECRET.getBytes(StandardCharsets.UTF_8));
+        secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String createToken(Authentication authentication) {
@@ -47,13 +44,13 @@ public class JwtTokenProvider {
         }
 
         var now = new Date();
-        var validity = new Date(now.getTime() + this.jwtProperties.getValidityInMs());
+        var validity = new Date(now.getTime() + this.getValidityInMs());
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(this.secretKey, SignatureAlgorithm.HS256)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -74,9 +71,13 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         Jwts.parserBuilder()
-                .setSigningKey(this.secretKey)
+                .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token);
         return true;
+    }
+
+    private long getValidityInMs() {
+        return 60L * 60 * 1000; // 1 hour
     }
 }
