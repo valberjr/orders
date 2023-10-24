@@ -115,7 +115,7 @@ class OrderControllerTest {
         var user = createUserRequest();
         var product = new ProductRequest("product1", new BigDecimal("10.00"));
         var orderItem = new OrderItemRequest(1, List.of(product));
-        return new OrderRequest("INCOMPLETE", user, List.of(orderItem));
+        return new OrderRequest(user, List.of(orderItem));
     }
 
     private UserRequest createUserRequest() {

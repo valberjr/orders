@@ -45,7 +45,7 @@ public class OrderService {
 
     @CacheEvict(value = "orders", allEntries = true)
     public OrderResponse createOrder(OrderRequest orderRequest) {
-        var order = new Order(orderRequest.status(), orderRequest.user(), orderRequest.items());
+        var order = new Order(orderRequest.user(), orderRequest.items());
         this.repository.save(order);
         return toResponse(order);
     }
