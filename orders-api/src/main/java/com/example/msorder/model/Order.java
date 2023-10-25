@@ -31,19 +31,18 @@ public class Order implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status = Status.INCOMPLETE;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @NotNull
+    @NotNull(message = "Order user cannot be null")
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @NotEmpty
+    @NotEmpty(message = "List of items cannot be empty")
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(nullable = false)
     private List<OrderItem> items = new ArrayList<>();

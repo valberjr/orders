@@ -24,18 +24,18 @@ public class UserDatabaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         this.userRepository.save(User.builder()
-                .username("user")
-                .password(passwordEncoder.encode("password"))
+                .username("jessica")
+                .password(passwordEncoder.encode("jessica"))
                 .name("jessica")
                 .roles(List.of("ROLE_USER"))
                 .build());
         this.userRepository.save(User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("password"))
+                .username("victoria")
+                .password(passwordEncoder.encode("victoria"))
                 .name("victoria")
                 .roles(List.of("ROLE_ADMIN"))
                 .build());
-        log.debug("Initialized database with test users.");
+        log.info("Database initialized with 2 test users.");
         this.userRepository
                 .findAll()
                 .forEach(user -> log.debug(String.format("User: %s", user.getUsername())));

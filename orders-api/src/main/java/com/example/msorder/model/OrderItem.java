@@ -29,7 +29,7 @@ public class OrderItem implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Min(value = 1)
+    @Min(value = 1, message = "Order item quantity cannot be less than 1")
     @Column(nullable = false)
     private Integer quantity;
 
@@ -37,7 +37,7 @@ public class OrderItem implements Serializable {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @NotEmpty
+    @NotEmpty(message = "List of products cannot be empty")
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(nullable = false)
     private List<Product> products = new ArrayList<>();
