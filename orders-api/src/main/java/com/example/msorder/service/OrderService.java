@@ -3,6 +3,7 @@ package com.example.msorder.service;
 import com.example.msorder.dto.OrderQueue;
 import com.example.msorder.dto.OrderRequest;
 import com.example.msorder.dto.OrderResponse;
+import com.example.msorder.exception.OrderNotFoundException;
 import com.example.msorder.model.Order;
 import com.example.msorder.model.Status;
 import com.example.msorder.repository.OrderRepository;
@@ -58,7 +59,7 @@ public class OrderService {
 
     public OrderResponse findById(String id) {
         return toResponse(repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new IllegalArgumentException("Order not found")));
+                .orElseThrow(() -> new OrderNotFoundException("Order not found")));
     }
 
     public List<OrderQueue> findIncompleteOrders() {
