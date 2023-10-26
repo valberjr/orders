@@ -7,6 +7,7 @@ import com.example.msorder.exception.OrderNotFoundException;
 import com.example.msorder.service.OrderService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api/orders")
 @Validated
+@Slf4j
 public class OrderController {
 
     @Inject
@@ -37,6 +39,7 @@ public class OrderController {
         try {
             return orderService.findById(id);
         } catch (OrderNotFoundException e) {
+            log.error("An OrderNotFoundException has occurred", e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     e.getMessage(), e);
         }
@@ -48,6 +51,7 @@ public class OrderController {
         try {
             return this.orderService.createOrder(orderRequest);
         } catch (TransactionSystemException e) {
+            log.error("An TransactionSystemException has occurred", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     nestedErrorMessage.messageFromNestedException(e), e);
         }
@@ -59,6 +63,7 @@ public class OrderController {
         try {
             this.orderService.delete(id);
         } catch (OrderNotFoundException e) {
+            log.error("An OrderNotFoundException has occurred", e);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     e.getMessage(), e);
         }
