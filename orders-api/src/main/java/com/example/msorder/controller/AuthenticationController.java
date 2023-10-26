@@ -2,7 +2,7 @@ package com.example.msorder.controller;
 
 import com.example.msorder.config.jwt.JwtTokenProvider;
 import com.example.msorder.dto.AuthenticationResponse;
-import com.example.msorder.model.AuthenticationRequest;
+import com.example.msorder.model.UserAuthentication;
 import com.example.msorder.model.User;
 import jakarta.inject.Inject;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ public class AuthenticationController {
 
     @PostMapping("/signin")
     @ResponseStatus(HttpStatus.OK)
-    public AuthenticationResponse signin(@RequestBody AuthenticationRequest request) {
+    public AuthenticationResponse signin(@RequestBody UserAuthentication request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),

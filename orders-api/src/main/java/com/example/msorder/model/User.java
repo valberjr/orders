@@ -26,14 +26,15 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotEmpty
+    @NotEmpty(message = "Username cannot be empty")
+    @Length(min = 5, max = 10, message = "Username must be between 5 and 10 characters")
     private String username;
 
-    @NotEmpty
+    @NotEmpty(message = "Password cannot be empty")
     private String password;
 
-    @NotEmpty
-    @Length(min = 3, max = 100)
+    @NotEmpty(message = "Name cannot be empty")
+    @Length(min = 3, max = 100, message = "Name must be between 3 and 100 characters")
     private String name;
 
     @ElementCollection(fetch = FetchType.EAGER)
