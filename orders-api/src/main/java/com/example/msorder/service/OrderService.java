@@ -72,7 +72,11 @@ public class OrderService {
 
     @CacheEvict(value = "orders", allEntries = true)
     public void delete(String id) {
-        repository.deleteById(UUID.fromString(id));
+        repository.deleteById(
+                repository.findById(UUID.fromString(id))
+                        .map(Order::getId)
+                        .orElseThrow(() -> new OrderNotFoundException("Order not found"))
+        );
     }
 
     public Optional<Order> updateIncompleteStatusOrder(Order order) {
