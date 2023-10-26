@@ -6,8 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record OrderRequest(
-        @NotNull
+        @NotNull(message = "Order user cannot be null")
         UserRequest user,
-        @NotEmpty
+
+        @NotEmpty(message = "List of items cannot be empty")
         List<OrderItemRequest> items) {
 }

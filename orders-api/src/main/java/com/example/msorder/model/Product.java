@@ -27,12 +27,12 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotBlank
-    @Length(min = 3, max = 100)
+    @NotBlank(message = "Product name cannot be blank")
+    @Length(min = 3, max = 100, message = "Product name must be between 3 and 100 characters")
     @Column(length = 100, nullable = false)
     private String name;
 
-    @DecimalMin(value = "0.00")
+    @DecimalMin(value = "0.00", message = "Product price cannot be less than 0.00")
     @Column(nullable = false)
     private BigDecimal price;
 
