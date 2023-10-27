@@ -1,6 +1,5 @@
 'use client';
 
-import { nextLocalStorage } from '@/lib/utils';
 import { User } from '@/model/user';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -31,14 +30,14 @@ const Authentication = () => {
       return;
     }
 
-    nextLocalStorage()?.setItem('auth_token', data.token);
+    localStorage.setItem('auth_token', data.token);
 
     const user: User = {
       id: data.userId,
       name: data.name,
     };
 
-    nextLocalStorage()?.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user));
 
     router.push('/orders');
   };

@@ -1,10 +1,10 @@
 'use client';
 
-import { nextLocalStorage } from '@/lib/utils';
 import { OrderItem } from '@/model/order-item';
 import { User } from '@/model/user';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import CreateOrder from '../forms/CreateOrder';
 
 interface OrderResponse {
   id: number;
@@ -16,9 +16,11 @@ interface OrderResponse {
 const Orders = () => {
   const router = useRouter();
 
-  const authToken = nextLocalStorage()?.getItem('auth_token');
+  const authToken: string | null | undefined =
+    localStorage.getItem('auth_token');
 
   const [isLoading, setIsLoading] = useState(true);
+
   const [orders, setOrders] = useState<OrderResponse[]>([]);
 
   useEffect(() => {
@@ -27,13 +29,13 @@ const Orders = () => {
     } else {
       setIsLoading(false);
     }
-  }, [router, authToken]);
+  }, []);
 
   useEffect(() => {
     fetchOrders();
-  }, [orders]);
+  }, []);
 
-  async function fetchOrders() {
+  const fetchOrders = async () => {
     const res = await fetch('http://localhost:8080/api/orders', {
       method: 'GET',
       headers: {
@@ -42,9 +44,22 @@ const Orders = () => {
       },
     });
 
+    if (!res.ok) {
+      switch (res.status) {
+        case 401:
+        case 403:
+          localStorage.clear();
+          router.push('/login');
+          break;
+        default:
+          break;
+      }
+    }
+
     const data = await res.json();
+
     setOrders(data.content);
-  }
+  };
 
   return (
     <div>
@@ -60,6 +75,7 @@ const Orders = () => {
               </li>
             ))}
           </ul>
+          <CreateOrder refreshOrders={fetchOrders} />
         </div>
       )}
     </div>

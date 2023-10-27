@@ -1,6 +1,7 @@
 'use client';
 
 import { Product } from '@/model/product';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface ItemsProps {
@@ -8,32 +9,41 @@ interface ItemsProps {
 }
 
 const Items = ({ products }: ItemsProps) => {
+  const router = useRouter();
+
   const [quantity, setQuantity] = useState(products.length);
+
+  useEffect(() => {
+    const authToken: string | null | undefined =
+      localStorage.getItem('auth_token');
+    if (!authToken) {
+      router.push('/login');
+    }
+  }, []);
 
   useEffect(() => {
     setQuantity(products.length);
   }, [products]);
 
-  const remove = (index: number) => () => {
-    const newProducts = products.filter((product, i) => i !== index);
-    products.splice(index, 1);
+  const remove = (product: Product) => () => {
+    const newProducts = products.filter((p) => p !== product);
+    products.splice(products.indexOf(product), 1);
     setQuantity(newProducts.length);
-    return newProducts;
   };
 
   return (
     <div>
       <ul>
-        {products.map((product, index) => (
+        {products.map((product: Product, index) => (
           <li key={index}>
             {product.name} - R${product.price} -{' '}
-            <a href='#' onClick={remove(index)}>
+            <a href='#' onClick={remove(product)}>
               remove
             </a>
           </li>
         ))}
       </ul>
-      <p>Total of items: {quantity} </p>
+      <p>Total of items: {quantity}</p>
     </div>
   );
 };

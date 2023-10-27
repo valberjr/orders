@@ -1,15 +1,27 @@
 'use client';
 
 import { Product } from '@/model/product';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const AddProduct = ({
   setProducts,
 }: {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }) => {
+  const router = useRouter();
+
   const [nameInput, setNameInput] = useState('');
+
   const [priceInput, setPriceInput] = useState('');
+
+  useEffect(() => {
+    const authToken: string | null | undefined =
+      localStorage.getItem('auth_token');
+    if (!authToken) {
+      router.push('/login');
+    }
+  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();

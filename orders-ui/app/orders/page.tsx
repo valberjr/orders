@@ -1,13 +1,7 @@
-import CreateOrder from '@/components/forms/CreateOrder';
 import Orders from '@/components/lists/Orders';
 
 const Page = () => {
-  return (
-    <>
-      <Orders />
-      <CreateOrder />
-    </>
-  );
+  return <Orders />;
 };
 
 export default Page;

@@ -1,6 +1,5 @@
 'use client';
 
-import { nextLocalStorage } from '@/lib/utils';
 import { Order } from '@/model/order';
 import { OrderItem } from '@/model/order-item';
 import { Product } from '@/model/product';
@@ -10,10 +9,15 @@ import { useEffect, useState } from 'react';
 import Items from '../lists/Items';
 import AddProduct from './AddProduct';
 
-const CreateOrder = () => {
+type CreateOrderProps = {
+  refreshOrders: () => void;
+};
+
+const CreateOrder = ({ refreshOrders }: CreateOrderProps) => {
   const router = useRouter();
 
-  const authToken = nextLocalStorage()?.getItem('auth_token');
+  const authToken: string | null | undefined =
+    localStorage.getItem('auth_token');
 
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -21,13 +25,12 @@ const CreateOrder = () => {
     if (!authToken) {
       router.push('/login');
     }
-  }, [router, authToken]);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const userData: string | null | undefined =
-      nextLocalStorage()?.getItem('user');
+    const userData: string | null | undefined = localStorage.getItem('user');
 
     let orderUser!: User;
 
@@ -50,6 +53,8 @@ const CreateOrder = () => {
     };
 
     createOrder(newOrder);
+
+    refreshOrders();
   };
 
   const createOrder = async (order: Order) => {
@@ -57,16 +62,23 @@ const CreateOrder = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${nextLocalStorage()?.getItem('auth_token')}`,
+        Authorization: `Bearer ${authToken}`,
       },
       body: JSON.stringify(order),
     });
 
     if (!res.ok) {
-      return;
+      switch (res.status) {
+        case 401:
+        case 403:
+          localStorage.clear();
+          router.push('/login');
+          break;
+        default:
+          break;
+      }
     }
 
-    // clear products list
     setProducts([]);
 
     router.push('/orders');
