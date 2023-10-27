@@ -1,4 +1,4 @@
-# Spring Boot application that simulates the flow between a user and an order.
+# A full-stack application with Nextjs14 and Spring Boot that simulates on order flow by a user
 
 ### Overview
 
@@ -10,3 +10,5 @@
 - Redis cache for information caching
 - Swagger API documentation
 - Maven for application build
+- Nextjs 14
+- Typescript
