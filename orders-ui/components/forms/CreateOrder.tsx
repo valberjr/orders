@@ -7,23 +7,19 @@ import { Product } from '@/model/product';
 import { User } from '@/model/user';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import ProductForm from '../ProductForm';
 import Items from '../lists/Items';
+import AddProduct from './AddProduct';
 
 const CreateOrder = () => {
   const router = useRouter();
 
   const authToken = nextLocalStorage()?.getItem('auth_token');
 
-  const [isLoading, setIsLoading] = useState(true);
-
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     if (!authToken) {
       router.push('/login');
-    } else {
-      setIsLoading(false);
     }
   }, [router, authToken]);
 
@@ -66,30 +62,24 @@ const CreateOrder = () => {
       body: JSON.stringify(order),
     });
 
-    const data = await res.json();
-
     if (!res.ok) {
       return;
     }
 
-    console.log(data);
-    alert('Order created successfully');
+    // clear products list
+    setProducts([]);
+
+    router.push('/orders');
   };
 
   return (
     <div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <div>
-          <h1>Create order</h1>
-          <form onSubmit={handleSubmit}>
-            <ProductForm setProducts={setProducts} />
-            <Items products={products} />
-            <button type='submit'>Create order</button>
-          </form>
-        </div>
-      )}
+      <h1>Create order</h1>
+      <form onSubmit={handleSubmit}>
+        <AddProduct setProducts={setProducts} />
+        <Items products={products} />
+        <button type='submit'>Create order</button>
+      </form>
     </div>
   );
 };

@@ -31,7 +31,7 @@ const Orders = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [orders]);
 
   async function fetchOrders() {
     const res = await fetch('http://localhost:8080/api/orders', {

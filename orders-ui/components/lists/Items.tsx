@@ -14,12 +14,22 @@ const Items = ({ products }: ItemsProps) => {
     setQuantity(products.length);
   }, [products]);
 
+  const remove = (index: number) => () => {
+    const newProducts = products.filter((product, i) => i !== index);
+    products.splice(index, 1);
+    setQuantity(newProducts.length);
+    return newProducts;
+  };
+
   return (
     <div>
       <ul>
         {products.map((product, index) => (
           <li key={index}>
-            {product.name} - R${product.price}
+            {product.name} - R${product.price} -{' '}
+            <a href='#' onClick={remove(index)}>
+              remove
+            </a>
           </li>
         ))}
       </ul>

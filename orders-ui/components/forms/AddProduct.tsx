@@ -3,7 +3,7 @@
 import { Product } from '@/model/product';
 import { useState } from 'react';
 
-const ProductForm = ({
+const AddProduct = ({
   setProducts,
 }: {
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
@@ -48,4 +48,4 @@ const ProductForm = ({
   );
 };
 
-export default ProductForm;
+export default AddProduct;
