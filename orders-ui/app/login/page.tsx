@@ -1,16 +1,7 @@
-'use client';
-
-import LoginForm from '@/components/LoginForm';
+import Authentication from '@/components/forms/Authentication';
 
 const Page = () => {
-  return (
-    <div>
-      <h1>Login</h1>
-      <main>
-        <LoginForm />
-      </main>
-    </div>
-  );
+  return <Authentication />;
 };
 
 export default Page;
